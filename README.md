@@ -22,10 +22,10 @@ different sources mixes where it overlaps. Brightness, light levels and mob spaw
 stay vanilla. ChromaLight only changes the color, and it works on any server.
 
 <p align="center">
-  <img src="docs/screenshots/mixing.jpg" alt="Green, red and purple light mixing in one room" width="49%" />
-  <img src="docs/screenshots/glow-squids.jpg" alt="Glow squids lighting a cave blue" width="49%" />
+  <img src="docs/screenshots/redstone-cave.jpg" alt="Redstone ore glowing in a deep cave" width="49%" />
+  <img src="docs/screenshots/glow-squids.jpg" alt="Glow squids in a flooded cave" width="49%" />
   <img src="docs/screenshots/lush-cave.jpg" alt="Lush cave lit by glow berries" width="49%" />
-  <img src="docs/screenshots/mixing-close.jpg" alt="Redstone and end portal frame light side by side" width="49%" />
+  <img src="docs/screenshots/portal-room.jpg" alt="Nether portal, end portal and redstone in one room" width="49%" />
 </p>
 
 ## Features
