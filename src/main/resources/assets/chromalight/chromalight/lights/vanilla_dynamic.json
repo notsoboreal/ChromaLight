@@ -1,0 +1,29 @@
+{
+  "_comment": "Bundled light pack: colours of LambDynamicLights sources. Block items (torches, lanterns, ...) use their block colour automatically.",
+  "items": {
+    "minecraft:glowstone_dust": "#FFD88A",
+    "minecraft:lava_bucket": "#FF7A2A",
+    "minecraft:blaze_rod": "#FFA040",
+    "minecraft:blaze_powder": "#FFA040",
+    "minecraft:fire_charge": "#FF8A30",
+    "minecraft:prismarine_crystals": "#9AF0E0",
+    "minecraft:nether_star": "#E8E0FF",
+    "minecraft:glow_berries": "#FFC965",
+    "minecraft:glow_ink_sac": "#6CF5D8",
+    "minecraft:spectral_arrow": "#FFE470"
+  },
+  "entities": {
+    "minecraft:blaze": "#FFA040",
+    "minecraft:magma_cube": "#FF7A2A",
+    "minecraft:glow_squid": "#6CF5D8",
+    "minecraft:allay": "#7AD8FF",
+    "minecraft:fireball": "#FF8A30",
+    "minecraft:small_fireball": "#FF9A3A",
+    "minecraft:dragon_fireball": "#C060FF",
+    "minecraft:wither_skull": "#8090A8",
+    "minecraft:spectral_arrow": "#FFE470",
+    "minecraft:creeper": "#E8FFE8",
+    "minecraft:tnt": "#FFE0B0"
+  },
+  "entity_blacklist": []
+}

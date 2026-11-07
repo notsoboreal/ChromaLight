@@ -1,0 +1,54 @@
+modLoader="javafml"
+loaderVersion="${loader_version_range}"
+license="${mod_license}"
+issueTrackerURL="https://github.com/notsoboreal/ChromaLight/issues"
+
+[[mods]]
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+authors="${mod_authors}"
+displayURL="https://modrinth.com/mod/chromalight"
+logoFile="chromalight.png"
+logoBlur=false
+description='''Colored block light. Torches glow warm, soul fire glows blue, amethyst glows purple, and light from different sources mixes.
+Sky light follows the time of day and the weather: warm daylight, orange sunsets, blue moonlight.
+Brightness, light levels and mob spawning stay vanilla; only the color changes.
+Works with the vanilla renderer and Sodium 0.8.13. Settings are on the ChromaLight page of Sodium's video settings.
+Also colors entities, LambDynamicLights and Ars Nouveau lights. Resource packs can color blocks from other mods.
+Client-side only.'''
+displayTest="IGNORE_ALL_VERSION"
+
+[features.${mod_id}]
+javaVersion="[21,)"
+
+[modproperties.${mod_id}]
+"sodium:config_api_user"="dev.nightmode.chromalight.compat.ChromaLightOptions"
+
+[[dependencies.${mod_id}]]
+modId="neoforge"
+type="required"
+versionRange="${neo_version_range}"
+ordering="NONE"
+side="CLIENT"
+
+[[dependencies.${mod_id}]]
+modId="minecraft"
+type="required"
+versionRange="${minecraft_version_range}"
+ordering="NONE"
+side="CLIENT"
+
+[[dependencies.${mod_id}]]
+modId="sodium"
+type="optional"
+versionRange="${sodium_version_range}"
+reason="Sodium integration targets its 0.8.13 terrain renderer and vertex format."
+ordering="AFTER"
+side="CLIENT"
+
+[[mixins]]
+config="chromalight.mixins.json"
+
+[[mixins]]
+config="chromalight.sodium.mixins.json"

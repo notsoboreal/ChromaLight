@@ -1,0 +1,24 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.nightmode.chromalight.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "LevelChunkMixin",
+    "SectionCompilerMixin",
+    "ModelBlockRendererMixin",
+    "LiquidBlockRendererMixin",
+    "ProgramMixin",
+    "ShaderInstanceMixin",
+    "LightTextureMixin",
+    "ClientLevelMixin",
+    "LevelRendererMixin",
+    "EntityRenderDispatcherMixin",
+    "ParticleAccessor",
+    "ParticleEngineMixin",
+    "ClientPacketListenerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

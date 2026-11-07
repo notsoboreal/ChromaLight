@@ -1,0 +1,22 @@
+{
+  "blocks": {
+    "create:blaze_burner": "#FF8A30",
+    "mymod:rgb_lamp[color=red]": "#FF2020",
+    "mymod:rgb_lamp[color=blue]": "#3050FF",
+    "#c:glowing_crystals": "#90C8FF"
+  },
+  "flicker": [
+    "mymod:brazier",
+    "#mymod:fire_bowls"
+  ],
+  "items": {
+    "mymod:glow_wand": "#80FFFF"
+  },
+  "entities": {
+    "mymod:fire_spirit": "#FF8040"
+  },
+  "entity_blacklist": [
+    "somebossmod:*",
+    "othermod:the_boss"
+  ]
+}

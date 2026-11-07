@@ -1,0 +1,38 @@
+ChromaLight
+Copyright (c) 2026 N[i]ghtly. All rights reserved.
+
+The source code is published so people can read it, learn from it, report bugs
+and send fixes. It is not open source. The code and assets stay the property of
+the author.
+
+You may:
+
+1. Download the mod from the official pages (GitHub, Modrinth, CurseForge) and
+   use it for yourself, including on any server, in videos and streams.
+2. Include the unmodified mod in a modpack, as long as the modpack downloads it
+   from Modrinth or CurseForge, or links to one of the official pages.
+3. Read and study the source code, build it for your own use, and send changes
+   back to this repository as pull requests. By sending a pull request you agree
+   that it can be included in ChromaLight under this license.
+4. Write add-ons and light packs that use ChromaLight's public API
+   (dev.nightmode.chromalight.api) or its light pack format.
+
+You may not, without written permission from the author:
+
+1. Copy any part of the code, shaders or assets into another mod, program or
+   project, whether or not it is changed, and whether or not it is free.
+2. Publish modified versions or forks of ChromaLight, or ports to other
+   Minecraft versions or mod loaders.
+3. Reupload the mod files to any other site or distribute them in any other way
+   than described above.
+4. Sell the mod or any part of it, or put it behind a paywall.
+
+To ask for permission, open an issue at
+https://github.com/notsoboreal/ChromaLight/issues
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHOR BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

@@ -1,0 +1,334 @@
+plugins {
+    id 'java-library'
+    id 'net.neoforged.gradle.userdev' version '7.1.38'
+}
+
+group = mod_group_id
+version = mod_version
+base { archivesName = mod_id }
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+java.withSourcesJar()
+
+// Keep the compiled version, loader metadata and artifact name in sync.
+def versionSourceDirectory = layout.buildDirectory.dir('generated/sources/modVersion/java')
+def generateModVersion = tasks.register('generateModVersion') {
+    inputs.property('modVersion', project.version.toString())
+    outputs.dir(versionSourceDirectory)
+    doLast {
+        def destination = versionSourceDirectory.get().file('dev/nightmode/chromalight/BuildVersion.java').asFile
+        destination.parentFile.mkdirs()
+        destination.setText("""package dev.nightmode.chromalight;
+
+/** Generated from gradle.properties; do not edit. */
+final class BuildVersion {
+    static final String VERSION = "${project.version}";
+    private BuildVersion() {}
+}
+""", 'UTF-8')
+    }
+}
+sourceSets.main.java.srcDir(versionSourceDirectory)
+tasks.named('compileJava') { dependsOn generateModVersion }
+tasks.named('sourcesJar', Jar) {
+    dependsOn generateModVersion
+    from('LICENSE')
+}
+
+def modMetadata = [mod_id: mod_id, mod_name: mod_name, mod_version: mod_version,
+                   mod_authors: mod_authors, mod_license: mod_license,
+                   minecraft_version_range: minecraft_version_range, neo_version_range: neo_version_range,
+                   loader_version_range: loader_version_range, sodium_version_range: sodium_version_range]
+tasks.named('processResources', ProcessResources) {
+    inputs.properties(modMetadata)
+    filesMatching('META-INF/neoforge.mods.toml') { expand(modMetadata) }
+}
+tasks.withType(AbstractArchiveTask).configureEach {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
+tasks.named('jar', Jar) {
+    from('LICENSE')
+    manifest.attributes('Implementation-Title': mod_name,
+            'Implementation-Version': project.version.toString(),
+            'Implementation-Vendor': mod_authors,
+            'Specification-Title': mod_name,
+            'Specification-Version': project.version.toString(),
+            'Specification-Vendor': mod_authors,
+            'Automatic-Module-Name': 'dev.nightmode.chromalight')
+}
+
+// Sodium's renderer and its early graphics services are separate modules upstream.
+// Register the unchanged boot classes as their own SERVICE group, not as a second Sodium mod.
+sourceSets {
+    sodiumBoot {
+        java.setSrcDirs([])
+        resources.setSrcDirs(['gradle/dev-libs/sodium-0.8.13/boot'])
+    }
+}
+sourceSets.sodiumBoot.output.classesDirs.setFrom([])
+
+repositories {
+    exclusiveContent {
+        forRepository { maven { name = 'Modrinth'; url = 'https://api.modrinth.com/maven' } }
+        filter { includeGroup 'maven.modrinth' }
+    }
+    exclusiveContent {
+        forRepository { maven { name = 'CaffeineMC'; url = 'https://maven.caffeinemc.net/releases' } }
+        filter { includeGroup 'net.caffeinemc' }
+    }
+}
+
+// Dev client only: Sodium is not bundled in ChromaLight or exposed as a published dependency.
+configurations {
+    devRuntime { canBeConsumed = false; canBeResolved = false }
+    runtimeClasspath.extendsFrom devRuntime
+}
+
+dependencies {
+    implementation "net.neoforged:neoforge:${neo_version}"
+    // Optional compat is compiled against the actual renderer; -PdevSodium=false still builds.
+    compileOnly "net.caffeinemc:sodium-neoforge-mod:${sodium_version}"
+    if (providers.gradleProperty('devSodium').map { it.toBoolean() }.getOrElse(true)) {
+        // NeoForge's production service wrapper shadows the inner mod on a dev classpath.
+        // Use the official unwrapped dev publication plus its four embedded API modules.
+        devRuntime "net.caffeinemc:sodium-neoforge-mod:${sodium_version}"
+        devRuntime "maven.modrinth:reeses-sodium-options:${reeses_modrinth_version}"
+        // Maven serves different FFAPI binaries under the same module versions. Use the
+        // unmodified NeoForge APIs shipped inside this exact official Sodium release.
+        devRuntime files('gradle/dev-libs/sodium-0.8.13/fabric-api-base-0.4.42+d1308ded19.jar',
+                'gradle/dev-libs/sodium-0.8.13/fabric-block-view-api-v2-1.0.10+9afaaf8c19.jar',
+                'gradle/dev-libs/sodium-0.8.13/fabric-renderer-api-v1-3.4.1+9125b6dc19.jar',
+                'gradle/dev-libs/sodium-0.8.13/fabric-rendering-data-attachment-v1-0.3.48+73761d2e19.jar')
+        if (providers.gradleProperty('devIris').map { it.toBoolean() }.getOrElse(true)) {
+            devRuntime "maven.modrinth:iris:${iris_modrinth_version}"
+        }
+    }
+    // Optional third-party mods for testing ChromaLight compat in the dev client only.
+    if (providers.gradleProperty('devCompat').map { it.toBoolean() }.getOrElse(false)) {
+        devRuntime "maven.modrinth:lambdynamiclights:${ldl_modrinth_version}"
+        devRuntime "maven.modrinth:ars-nouveau:${ars_nouveau_modrinth_version}"
+        devRuntime "maven.modrinth:geckolib:${geckolib_modrinth_version}"
+        devRuntime "maven.modrinth:curios:${curios_modrinth_version}"
+        // Popular Sodium addons and performance mods (all checked against ChromaLight's hooks).
+        if (providers.gradleProperty('devSodium').map { it.toBoolean() }.getOrElse(true)) {
+            devRuntime "maven.modrinth:sodium-extra:${sodium_extra_modrinth_version}"
+            devRuntime "maven.modrinth:chloride:${chloride_modrinth_version}"
+            devRuntime "maven.modrinth:sodium-shadowy-path-blocks:${sspb_modrinth_version}"
+        }
+        devRuntime "maven.modrinth:lithium:${lithium_modrinth_version}"
+        devRuntime "maven.modrinth:ferrite-core:${ferritecore_modrinth_version}"
+        devRuntime "maven.modrinth:modernfix:${modernfix_modrinth_version}"
+        devRuntime "maven.modrinth:immediatelyfast:${immediatelyfast_modrinth_version}"
+        devRuntime "maven.modrinth:entityculling:${entityculling_modrinth_version}"
+        // Chunk and light engines: -PdevChunks=c2me (C2ME + ScalableLux, the Starlight fork),
+        // moonrise (Paper's chunk system with Starlight; excludes C2ME) or none.
+        def chunks = providers.gradleProperty('devChunks').getOrElse('c2me')
+        if (chunks == 'c2me') {
+            devRuntime "maven.modrinth:c2me-neoforge:${c2me_modrinth_version}"
+            devRuntime "maven.modrinth:scalablelux:${scalablelux_modrinth_version}"
+        } else if (chunks == 'moonrise') {
+            devRuntime "maven.modrinth:moonrise-opt:${moonrise_modrinth_version}"
+        } else if (chunks != 'none') {
+            throw new GradleException("devChunks must be c2me, moonrise or none, not ${chunks}")
+        }
+    }
+}
+
+// Enable profiling with: gradlew runClient -Pjfr=true
+def jfrEnabled = providers.gradleProperty('jfr').map { it.toBoolean() }.getOrElse(false)
+def jfrDirectory = layout.buildDirectory.dir('jfr').get().asFile
+def jfrRecordingFile = new File(jfrDirectory,
+        "chromalight-${new Date().format('yyyyMMdd-HHmmss')}.jfr")
+
+runs {
+    configureEach {
+        workingDirectory project.layout.projectDirectory.dir('run').dir(name)
+        modSource project.sourceSets.main
+    }
+    client {
+        // -PquickPlay="New World" loads that save straight from launch, no clicks needed.
+        def quickPlay = providers.gradleProperty('quickPlay').getOrNull()
+        if (quickPlay) programArguments.addAll('--quickPlaySingleplayer', quickPlay)
+        if (providers.gradleProperty('devSodium').map { it.toBoolean() }.getOrElse(true)) {
+            modSources.add('sodium_service', project.sourceSets.sodiumBoot)
+        }
+        if (jfrEnabled) {
+            jvmArguments.addAll(
+                    '-XX:FlightRecorderOptions=stackdepth=128',
+                    "-XX:StartFlightRecording=name=ChromaLight,settings=profile,disk=true,dumponexit=true,maxage=2h,maxsize=512m,filename=${jfrRecordingFile.absolutePath}".toString())
+        }
+    }
+}
+
+tasks.withType(JavaExec).matching { it.name == 'runClient' }.configureEach {
+    if (jfrEnabled) {
+        doFirst {
+            jfrDirectory.mkdirs()
+            logger.lifecycle("JFR recording: ${jfrRecordingFile}")
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 21
+}
+
+tasks.register('verifySodiumDev') {
+    doLast {
+        def enabled = providers.gradleProperty('devSodium').map { it.toBoolean() }.getOrElse(true)
+        def runtimeFiles = tasks.named('runClient', JavaExec).get().classpath.files
+        // Sodium addons (sodium-extra, ...) share the prefix; match the renderer itself.
+        def sodium = runtimeFiles.findAll { it.name.startsWith('sodium-neoforge-mod-') }
+        if (enabled && sodium.size() != 1) throw new GradleException("Expected one Sodium dev artifact, found ${sodium}")
+        if (!enabled && !sodium.isEmpty()) throw new GradleException('Sodium dev dependency was not disabled')
+        if (!enabled && (tasks.named('runClient', JavaExec).get().environment['MOD_CLASSES']?.toString() ?: '').contains('sodium_service%%'))
+            throw new GradleException('Sodium early service group was not disabled')
+        if (!enabled && runtimeFiles.any { it.isDirectory() && new File(it, 'net/caffeinemc/mods/sodium/service/SodiumWorkarounds.class').isFile() })
+            throw new GradleException('Sodium early service classes remain on the disabled client classpath')
+        if (enabled) {
+            def provenance = new groovy.json.JsonSlurper().parse(file('gradle/dev-libs/sodium-0.8.13/checksums.json'))
+            def sha256 = { File artifact ->
+                java.security.MessageDigest.getInstance('SHA-256').digest(artifact.bytes).encodeHex().toString()
+            }
+            if (sha256(sodium.first()) != provenance.sodiumModSha256)
+                throw new GradleException('Sodium dev mod does not match the official NeoForge release binary')
+            new java.util.zip.ZipFile(sodium.first()).withCloseable { jar ->
+                for (def required : ['net/caffeinemc/mods/sodium/client/SodiumClientMod.class',
+                                     'net/caffeinemc/mods/sodium/neoforge/SodiumForgeMod.class',
+                                     'sodium-common.mixins.json', 'sodium-neoforge.mixins.json']) {
+                    if (jar.getEntry(required) == null)
+                        throw new GradleException("Sodium implementation is missing ${required}; a service wrapper is not a dev mod")
+                }
+            }
+            for (def module : ['fabric-api-base', 'fabric-block-view-api-v2', 'fabric-renderer-api-v1',
+                                'fabric-rendering-data-attachment-v1']) {
+                if (runtimeFiles.count { it.name.startsWith(module + '-') } != 1)
+                    throw new GradleException("Expected exactly one required Sodium API module: ${module}")
+            }
+            provenance.modules.each { name, expectedHash ->
+                def candidates = runtimeFiles.findAll { it.name == name }
+                if (candidates.size() != 1 || sha256(candidates.first()) != expectedHash)
+                    throw new GradleException("Sodium API ${name} must match its unmodified official NeoForge bundled binary")
+                new java.util.zip.ZipFile(candidates.first()).withCloseable { jar ->
+                    if (jar.getEntry('META-INF/neoforge.mods.toml') == null || jar.getEntry('fabric.mod.json') != null)
+                        throw new GradleException("Sodium API ${name} is not the required NeoForge mod")
+                }
+            }
+            provenance.bootFiles.each { name, expectedHash ->
+                def original = file('gradle/dev-libs/sodium-0.8.13/boot/' + name)
+                if (!original.isFile() || sha256(original) != expectedHash)
+                    throw new GradleException("Missing/changed Sodium early service file ${name}")
+            }
+        }
+        int constraints = runtimeFiles.sum { devPlatformRequirements.validateJar(it, [neoforge: neo_version, minecraft: minecraft_version]) } ?: 0
+        logger.lifecycle("Sodium dev runtime: ${enabled ? sodium : 'disabled'}")
+        if (enabled) logger.lifecycle('Sodium implementation, NeoForge entry point and both mixin configurations: VERIFIED')
+        if (enabled) logger.lifecycle('Four official bundled NeoForge API modules: SHA-256 and loader metadata VERIFIED')
+        def iris = runtimeFiles.findAll { it.name.startsWith('iris-') }
+        boolean irisEnabled = enabled && providers.gradleProperty('devIris').map { it.toBoolean() }.getOrElse(true)
+        if (iris.size() != (irisEnabled ? 1 : 0))
+            throw new GradleException("Unexpected Iris dev artifacts: ${iris}")
+        if (irisEnabled) {
+            def hash = java.security.MessageDigest.getInstance('SHA-512').digest(iris.first().bytes).encodeHex().toString()
+            if (hash != iris_sha512) throw new GradleException('Iris dev JAR does not match the pinned official NeoForge release')
+            new java.util.zip.ZipFile(iris.first()).withCloseable { jar ->
+                if (jar.getEntry('META-INF/neoforge.mods.toml') == null || jar.getEntry('fabric.mod.json') != null ||
+                        jar.getEntry('net/irisshaders/iris/Iris.class') == null)
+                    throw new GradleException('Iris dev artifact is not the expected NeoForge implementation')
+            }
+        }
+        logger.lifecycle("Iris dev runtime: ${irisEnabled ? '1.8.14-beta.1 for NeoForge (official binary verified)' : 'disabled'}")
+        def reeses = runtimeFiles.findAll { it.name.startsWith('reeses-sodium-options-') }
+        if (reeses.size() != (enabled ? 1 : 0)) throw new GradleException("Unexpected Reese's dev artifacts: ${reeses}")
+        if (enabled && java.security.MessageDigest.getInstance('SHA-512').digest(reeses.first().bytes).encodeHex().toString() != reeses_sha512)
+            throw new GradleException("Reese's dev JAR does not match the official NeoForge release")
+        logger.lifecycle("Reese's Sodium Options dev runtime: ${enabled ? '2.2.4 NeoForge (official binary verified)' : 'disabled'}")
+        logger.lifecycle("Dev platform compatibility: ${constraints} requirements VERIFIED for NeoForge ${neo_version} / Minecraft ${minecraft_version}")
+    }
+}
+
+apply from: 'gradle/dev-platform-check.gradle'
+
+// The same fail-fast validation also runs when calling Gradle directly, without the PS launcher.
+tasks.withType(JavaExec).matching { it.name == 'runClient' }.configureEach {
+    dependsOn tasks.named('verifyDevLaunch')
+}
+
+tasks.register('verifyDevLaunch') {
+    dependsOn tasks.named('classes'), tasks.named('verifySodiumDev')
+    doLast {
+        def code = layout.buildDirectory.file('classes/java/main/dev/nightmode/chromalight/ChromaLight.class').get().asFile
+        def actualVersion = null
+        new org.objectweb.asm.ClassReader(code.bytes).accept(new org.objectweb.asm.ClassVisitor(org.objectweb.asm.Opcodes.ASM9) {
+            @Override
+            org.objectweb.asm.FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
+                if (name == 'VERSION') actualVersion = value
+                return null
+            }
+        }, org.objectweb.asm.ClassReader.SKIP_CODE | org.objectweb.asm.ClassReader.SKIP_DEBUG)
+        if (actualVersion != project.version.toString())
+            throw new GradleException("Compiled ChromaLight code ${actualVersion} does not match project ${project.version}")
+        def metadata = layout.buildDirectory.file('resources/main/META-INF/neoforge.mods.toml').get().asFile.text
+        if (!metadata.contains("version=\"${project.version}\""))
+            throw new GradleException('Processed mod metadata is stale')
+        logger.lifecycle("ChromaLight compiled code: ${actualVersion} (baked + limited realtime RGB, native lightmap)")
+        logger.lifecycle("Project: ${projectDir}")
+        logger.lifecycle("Game directory: ${layout.projectDirectory.dir('run/client').asFile}")
+        logger.lifecycle("JFR requested: ${jfrEnabled}")
+    }
+}
+
+// Inspect the distributable itself, without loading game classes or starting a client.
+tasks.register('verifyReleaseJar') {
+    dependsOn tasks.named('jar')
+    inputs.file(tasks.named('jar', Jar).flatMap { it.archiveFile })
+    doLast {
+        def artifact = tasks.named('jar', Jar).get().archiveFile.get().asFile
+        new java.util.jar.JarFile(artifact).withCloseable { jar ->
+            for (def required : ['META-INF/neoforge.mods.toml', 'LICENSE', 'chromalight.png',
+                                 'chromalight.mixins.json', 'chromalight.sodium.mixins.json',
+                                 'assets/chromalight/lang/en_us.json', 'assets/chromalight/lang/ru_ru.json',
+                                 'assets/chromalight/textures/gui/icon.png',
+                                 'dev/nightmode/chromalight/compat/ChromaLightOptions.class',
+                                 'assets/chromalight/shaders/native_light.glsl',
+                                 'assets/chromalight/shaders/include/color_space.glsl',
+                                 'assets/chromalight/shaders/include/native_lightmap.glsl',
+                                 'assets/chromalight/shaders/include/realtime_table.glsl',
+                                 'assets/chromalight/shaders/include/vanilla_vertex.glsl',
+                                 'assets/chromalight/shaders/include/sodium_vertex.glsl',
+                                 'dev/nightmode/chromalight/ChromaLight.class',
+                                 'dev/nightmode/chromalight/api/ClientLightSources.class']) {
+                if (jar.getEntry(required) == null)
+                    throw new GradleException("Release JAR is missing ${required}")
+            }
+            String metadata = jar.getInputStream(jar.getEntry('META-INF/neoforge.mods.toml')).withCloseable { it.getText('UTF-8') }
+            if (metadata.contains('${') || !metadata.contains("version=\"${project.version}\"") ||
+                    !metadata.contains("authors=\"${mod_authors}\""))
+                throw new GradleException('Release metadata contains stale or unexpanded properties')
+            devPlatformRequirements.validateToml(metadata, artifact.name, [neoforge: neo_version, minecraft: minecraft_version])
+            if (jar.manifest.mainAttributes.getValue('Implementation-Version') != project.version.toString())
+                throw new GradleException('Release manifest version does not match Gradle')
+            def image = jar.getInputStream(jar.getEntry('chromalight.png')).withCloseable { javax.imageio.ImageIO.read(it) }
+            if (image == null || image.width != 512 || image.height != 512)
+                throw new GradleException('Release icon must be a valid 512 x 512 PNG')
+            def forbidden = jar.entries().findAll { entry ->
+                entry.name.startsWith('net/caffeinemc/') || entry.name.startsWith('net/fabricmc/') || entry.name.startsWith('net/irisshaders/') || entry.name.startsWith('me/flashyreese/') ||
+                        entry.name.startsWith('META-INF/jarjar/') || entry.name.startsWith('META-INF/services/') ||
+                        entry.name.startsWith('dev/nightmode/chromalight/validation/') ||
+                        entry.name == 'gradle.properties' || entry.name.endsWith('.jfr')
+            }
+            if (!forbidden.isEmpty()) throw new GradleException("Unexpected dev files in release JAR: ${forbidden}")
+            logger.lifecycle("Release JAR VERIFIED: ${artifact.name} (${artifact.length()} bytes), ${mod_authors}, icon, license, expanded metadata; no bundled dev mods")
+        }
+    }
+}
+tasks.named('assemble') { dependsOn tasks.named('verifyReleaseJar') }
+gradle.projectsEvaluated { tasks.named('check') { setDependsOn([]) } }
+
+// Optional workstation checks do not participate in normal build or client launch.
+if (file('gradle/local-tests.gradle').isFile()) {
+    dependencies { testImplementation "net.caffeinemc:sodium-neoforge-mod:${sodium_version}" }
+    sourceSets.test.runtimeClasspath += sourceSets.sodiumBoot.output
+    apply from: 'gradle/local-tests.gradle'
+}

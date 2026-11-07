@@ -1,0 +1,110 @@
+# ChromaLight palette
+
+Default light colors of vanilla blocks. Brightness and range always come from the
+block itself. All candles share the same warm flame color. Change any of them with
+`color.<block id>` in `config/chromalight.properties` or with a light pack.
+
+| Block | Color | Only when |
+|---|---|---|
+| `minecraft:amethyst_cluster` | `#C384FF` | |
+| `minecraft:beacon` | `#C0F8FF` | |
+| `minecraft:black_candle` | `#FFD394` | |
+| `minecraft:black_candle_cake` | `#FFD394` | |
+| `minecraft:blast_furnace` | `#FFB96B` | |
+| `minecraft:blue_candle` | `#FFD394` | |
+| `minecraft:blue_candle_cake` | `#FFD394` | |
+| `minecraft:brewing_stand` | `#FFC26B` | |
+| `minecraft:brown_candle` | `#FFD394` | |
+| `minecraft:brown_candle_cake` | `#FFD394` | |
+| `minecraft:brown_mushroom` | `#DEC7A0` | |
+| `minecraft:calibrated_sculk_sensor` | `#4DD5E5` | |
+| `minecraft:campfire` | `#FFAF58` | |
+| `minecraft:candle` | `#FFD394` | |
+| `minecraft:candle_cake` | `#FFD394` | |
+| `minecraft:cave_vines` | `#FFC965` | |
+| `minecraft:cave_vines_plant` | `#FFC965` | |
+| `minecraft:conduit` | `#8CF5E6` | |
+| `minecraft:copper_bulb` | `#FFE1A4` | |
+| `minecraft:crying_obsidian` | `#A878FF` | |
+| `minecraft:cyan_candle` | `#FFD394` | |
+| `minecraft:cyan_candle_cake` | `#FFD394` | |
+| `minecraft:deepslate_redstone_ore` | `#FF3020` | |
+| `minecraft:dragon_egg` | `#BD7FFF` | |
+| `minecraft:enchanting_table` | `#B597FF` | |
+| `minecraft:end_gateway` | `#C1A0FF` | |
+| `minecraft:end_portal` | `#95F5D8` | |
+| `minecraft:end_portal_frame` | `#95F5D8` | |
+| `minecraft:end_rod` | `#E9DEFF` | |
+| `minecraft:ender_chest` | `#BD7FFF` | |
+| `minecraft:exposed_copper_bulb` | `#F5DCA0` | |
+| `minecraft:fire` | `#FFAF58` | |
+| `minecraft:furnace` | `#FFB96B` | |
+| `minecraft:glow_lichen` | `#A8D4FF` | |
+| `minecraft:glowstone` | `#FFE2A0` | |
+| `minecraft:gray_candle` | `#FFD394` | |
+| `minecraft:gray_candle_cake` | `#FFD394` | |
+| `minecraft:green_candle` | `#FFD394` | |
+| `minecraft:green_candle_cake` | `#FFD394` | |
+| `minecraft:jack_o_lantern` | `#FFAE48` | |
+| `minecraft:lantern` | `#FFD08A` | |
+| `minecraft:large_amethyst_bud` | `#C384FF` | |
+| `minecraft:lava` | `#FF8D38` | |
+| `minecraft:lava_cauldron` | `#FF8D38` | |
+| `minecraft:light` | `#FFFFFF` | |
+| `minecraft:light_blue_candle` | `#FFD394` | |
+| `minecraft:light_blue_candle_cake` | `#FFD394` | |
+| `minecraft:light_gray_candle` | `#FFD394` | |
+| `minecraft:light_gray_candle_cake` | `#FFD394` | |
+| `minecraft:lime_candle` | `#FFD394` | |
+| `minecraft:lime_candle_cake` | `#FFD394` | |
+| `minecraft:magenta_candle` | `#FFD394` | |
+| `minecraft:magenta_candle_cake` | `#FFD394` | |
+| `minecraft:magma_block` | `#FF7438` | |
+| `minecraft:medium_amethyst_bud` | `#C384FF` | |
+| `minecraft:nether_portal` | `#AF55FF` | |
+| `minecraft:ochre_froglight` | `#FFD88C` | |
+| `minecraft:orange_candle` | `#FFD394` | |
+| `minecraft:orange_candle_cake` | `#FFD394` | |
+| `minecraft:oxidized_copper_bulb` | `#A4E5BC` | |
+| `minecraft:pearlescent_froglight` | `#F6B4EF` | |
+| `minecraft:pink_candle` | `#FFD394` | |
+| `minecraft:pink_candle_cake` | `#FFD394` | |
+| `minecraft:purple_candle` | `#FFD394` | |
+| `minecraft:purple_candle_cake` | `#FFD394` | |
+| `minecraft:red_candle` | `#FFD394` | |
+| `minecraft:red_candle_cake` | `#FFD394` | |
+| `minecraft:redstone_block` | `#FF3020` | |
+| `minecraft:redstone_lamp` | `#FF6444` | |
+| `minecraft:redstone_ore` | `#FF3020` | |
+| `minecraft:redstone_torch` | `#FF3020` | |
+| `minecraft:redstone_wall_torch` | `#FF3020` | |
+| `minecraft:redstone_wire` | `#FF3020` | |
+| `minecraft:respawn_anchor` | `#A878FF` | |
+| `minecraft:sculk_catalyst` | `#4DD5E5` | |
+| `minecraft:sculk_sensor` | `#4DD5E5` | |
+| `minecraft:sea_lantern` | `#B0F3EE` | |
+| `minecraft:sea_pickle` | `#D8FFC1` | |
+| `minecraft:shroomlight` | `#FFB16D` | |
+| `minecraft:small_amethyst_bud` | `#C384FF` | |
+| `minecraft:smoker` | `#FFB96B` | |
+| `minecraft:soul_campfire` | `#4060FF` | |
+| `minecraft:soul_fire` | `#4060FF` | |
+| `minecraft:soul_lantern` | `#4060FF` | |
+| `minecraft:soul_torch` | `#4060FF` | |
+| `minecraft:soul_wall_torch` | `#4060FF` | |
+| `minecraft:torch` | `#FFD08A` | |
+| `minecraft:trial_spawner` | `#FFB96B` | |
+| `minecraft:vault` | `#FFB96B` | |
+| `minecraft:verdant_froglight` | `#B4FFC4` | |
+| `minecraft:wall_torch` | `#FFD08A` | |
+| `minecraft:waxed_copper_bulb` | `#FFE1A4` | |
+| `minecraft:waxed_exposed_copper_bulb` | `#F5DCA0` | |
+| `minecraft:waxed_oxidized_copper_bulb` | `#A4E5BC` | |
+| `minecraft:waxed_weathered_copper_bulb` | `#CCE5AB` | |
+| `minecraft:weathered_copper_bulb` | `#CCE5AB` | |
+| `minecraft:white_candle` | `#FFD394` | |
+| `minecraft:white_candle_cake` | `#FFD394` | |
+| `minecraft:yellow_candle` | `#FFD394` | |
+| `minecraft:yellow_candle_cake` | `#FFD394` | |
+| `minecraft:trial_spawner` | `#409CFF` | `ominous=true` |
+| `minecraft:vault` | `#409CFF` | `ominous=true` |

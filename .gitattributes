@@ -1,0 +1,20 @@
+* text=auto eol=lf
+*.java text eol=lf
+*.gradle text eol=lf
+*.properties text eol=lf
+*.toml text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.glsl text eol=lf
+*.vsh text eol=lf
+*.fsh text eol=lf
+*.sh text eol=lf
+gradlew text eol=lf
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+*.jar binary
+*.class binary
+*.png binary
+# Preserve byte-identical upstream boot resources and their verified hashes.
+gradle/dev-libs/sodium-0.8.13/boot/** -text -diff

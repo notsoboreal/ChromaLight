@@ -1,0 +1,9 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.nightmode.chromalight.mixin.sodium",
+  "plugin": "dev.nightmode.chromalight.mixin.SodiumMixinPlugin",
+  "compatibilityLevel": "JAVA_21",
+  "client": ["ChunkMeshFormatsMixin", "LevelSliceMixin", "ChunkRenderContextMixin", "ShaderLoaderMixin", "MeshingTaskMixin", "GlProgramMixin", "ConfigMixin"],
+  "injectors": {"defaultRequire": 1}
+}
