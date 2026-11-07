@@ -1,3 +1,9 @@
+# 1.2.1-alpha
+
+New
+
+- Chests, signs, banners, beds, heads and other blocks with their own renderer take the color of the light around them, like mobs. Uses the Colored light on entities setting.
+
 # 1.2.0-alpha
 
 New

@@ -14,6 +14,7 @@
     "ClientLevelMixin",
     "LevelRendererMixin",
     "EntityRenderDispatcherMixin",
+    "BlockEntityRenderDispatcherMixin",
     "ParticleAccessor",
     "ParticleEngineMixin",
     "ClientPacketListenerMixin"

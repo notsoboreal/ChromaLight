@@ -31,7 +31,7 @@ stay vanilla. ChromaLight only changes the color, and it works on any server.
 ## Features
 
 - Colors for every vanilla light source, mixed smoothly across the whole render distance.
-- Mobs, players, items and particles take the color of the light around them.
+- Mobs, players, items, particles, chests, signs and banners take the color of the light around them.
 - Sky light follows the time of day and the weather: warm daylight, orange sunsets,
   blue moonlight, grey rain.
 - Optional fire flicker for torches, campfires, candles and lanterns.
@@ -64,7 +64,7 @@ restart the game.
 | Sky | Weather colors | On | Grey-blue sky light in rain, darker in thunderstorms |
 | Fire flicker | Fire flicker | Off | Torches, fire, campfires, candles and lanterns flicker |
 | Fire flicker | Flicker strength | 50% | How deep the flicker dips |
-| Entities | Colored light on entities | On | Mobs, players, items and particles take the color of the light around them |
+| Entities | Colored light on entities | On | Mobs, players, items, particles and block entities (chests, signs, banners) take the color of the light around them |
 | Entities | Color dynamic lights | On | Colors LambDynamicLights / Ars Nouveau dynamic light |
 | Performance | Mixed sources per voxel | 4 | How many colors can mix at one spot (2-8) |
 | Performance | Realtime channels per section | 32 | How many animated colors one chunk section can show (0-32) |
@@ -187,7 +187,6 @@ sync anything with the server.
 - **Shader packs**: ChromaLight runs alongside Iris, but most packs replace terrain
   lighting with their own, so colors may not show or may look off. Use
   `/chromalight disable` if a pack looks wrong.
-- Block entities drawn by their own renderer (chests, signs, banners) aren't tinted.
 - Colors are computed while chunks build. Source blending makes chunk building
   slower in brightly lit areas; frame rate after that is unaffected.
 - With Sodium, each terrain vertex takes 4 more bytes (from 20 to 24), so terrain uses about

@@ -66,6 +66,20 @@ public final class EntityTint {
     }
 
     /**
+     * Block entities (chests, signs, banners, beds, skulls...): the same tint as entities,
+     * sampled at the block. Client thread, inside the block entity render loop.
+     */
+    public static MultiBufferSource wrapBlockEntity(MultiBufferSource buffers, net.minecraft.world.level.block.entity.BlockEntity blockEntity, int packedLight) {
+        if (!lightmapReady || packedLight == LightTexture.FULL_BRIGHT || !LightingControl.isEnabled() || !LightingControl.entityLighting()) return buffers;
+        if (!(blockEntity.getLevel() instanceof ClientLevel level) || level != Minecraft.getInstance().level) return buffers;
+        BlockPos pos = blockEntity.getBlockPos();
+        float[] factor = factorAt(level, new Vec3(pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5), packedLight);
+        if (factor == null) return buffers;
+        tinted++;
+        return new Buffers(buffers, factor[0], factor[1], factor[2]);
+    }
+
+    /**
      * Particles: the same tint as entities, sampled at the particle. Full-bright (self-lit)
      * particles are left alone. Client thread, inside the particle render loop.
      */
