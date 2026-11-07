@@ -51,9 +51,17 @@ public final class EntityTint {
             LIGHTMAP[sky * 16 + block] = pixels.getPixelRGBA(block, sky);
         lightmapReady = true;
     }
-    /** Positions are re-sampled when blocks change, and every half second for moving dynamic lights. */
-    public static void invalidate() { CACHE.clear(); }
-    public static void tick() { if (++ticks % 10 == 0) CACHE.clear(); }
+    /**
+     * Positions are re-sampled when blocks change, and every half second for moving dynamic lights.
+     * A block change arrives before the light engine has propagated it, so the cache is also
+     * cleared for the next few ticks; otherwise the old light would stick for up to half a second.
+     */
+    public static void invalidate() { CACHE.clear(); refreshTicks = 4; }
+    public static void tick() {
+        if (refreshTicks > 0) { refreshTicks--; CACHE.clear(); }
+        else if (++ticks % 10 == 0) CACHE.clear();
+    }
+    private static int refreshTicks;
 
     public static MultiBufferSource wrap(MultiBufferSource buffers, Entity entity, int packedLight, float partialTick) {
         if (!lightmapReady || !LightingControl.isEnabled() || !LightingControl.entityLighting()) return buffers;

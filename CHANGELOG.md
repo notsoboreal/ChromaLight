@@ -1,3 +1,9 @@
+# 1.2.2-alpha
+
+Fixed
+
+- Mobs, held items, chests and other block entities sometimes kept the old light color for up to half a second after a light was placed or broken, then jumped to the new one.
+
 # 1.2.1-alpha
 
 New
