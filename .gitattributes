@@ -16,5 +16,3 @@ gradlew text eol=lf
 *.jar binary
 *.class binary
 *.png binary
-# Preserve byte-identical upstream boot resources and their verified hashes.
-gradle/dev-libs/sodium-0.8.13/boot/** -text -diff

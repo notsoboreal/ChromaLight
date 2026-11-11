@@ -195,17 +195,9 @@ sync anything with the server.
 ## Building
 
 ```powershell
-.\gradlew.bat build              # mod JAR in build/libs/
-.\run-client-jfr.ps1             # dev client with Sodium, Iris and a JFR recording
-.\run-client-jfr.ps1 -Compat     # also LambDynamicLights, Ars Nouveau, Sodium addons,
-                                 # performance mods, C2ME and ScalableLux
-.\run-client-jfr.ps1 -Compat -PdevChunks=moonrise   # Moonrise instead (or none)
-.\run-client-jfr.ps1 -NoIris     # or -NoSodium
+.\gradlew.bat build    # mod JAR in build/libs/
+.\gradlew.bat runClient
 ```
-
-JFR recordings are saved to `build/jfr/` when the game closes. Gradle is set up for a
-local proxy on `127.0.0.1:1080`; remove those lines from `gradle.properties` if you
-don't use one.
 
 ## License
 

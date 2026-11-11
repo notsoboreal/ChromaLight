@@ -27,5 +27,14 @@ hs_err_pid*
 *.jar
 *.class
 !gradle/wrapper/gradle-wrapper.jar
-!gradle/dev-libs/**/*.jar
-!gradle/dev-libs/**/*.class
+
+# Local dev client setup, launch scripts and publishing drafts.
+/gradle/dev.gradle
+/gradle/dev-libs/
+/gradle/dev-platform-check.gradle
+/run-client-jfr.bat
+/run-client-jfr.ps1
+/build-windows.bat
+/branding/
+/config-example/
+/DESCRIPTION.md
